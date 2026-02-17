@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AACB - 资源获取</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            background-color: #fff;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            background-color: #fff3cd;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #856404;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        /* 轮播样式 */
+        .carousel {
+            position: relative;
+            max-width: 1000px;
+            margin: 30px auto;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .carousel-container {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        
+        .carousel-item {
+            min-width: 100%;
+            padding: 20px;
+            background-color: #fff;
+        }
+        
+        .carousel-item img {
+            width: 100%;
+            border-radius: 5px;
+        }
+        
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 20px;
+        }
+        
+        .carousel-btn {
+            background-color: rgba(255,255,255,0.8);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .carousel-btn:hover {
+            background-color: rgba(255,255,255,1);
+            transform: scale(1.1);
+        }
+        
+        .carousel-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .carousel-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .carousel-indicator.active {
+            background-color: rgba(255,255,255,1);
+            transform: scale(1.2);
+        }
+        
+        .step {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .step::before {
+            content: attr(data-step);
+            position: absolute;
+            top: -15px;
+            left: 30px;
+            width: 30px;
+            height: 30px;
+            background-color: #ffc107;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .step h2 {
+            color: #ffc107;
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+        
+        .copy-instruction {
+            margin: 20px 0;
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .copy-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .copy-card {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .copy-card:hover {
+            background-color: #e7f3ff;
+            border-color: #b3d7ff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .copy-card p {
+            margin: 0;
+            color: #dc3545;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .keywords {
+            margin: 20px 0;
+        }
+        
+        .keywords p {
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .keyword-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .keyword {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .keyword:hover {
+            background-color: #ffc107;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        
+        .instruction {
+            position: relative;
+            background-color: #fff;
+            border: 2px dashed #dc3545;
+            border-radius: 8px;
+            padding: 30px 20px 20px;
+            margin: 20px 0;
+            color: #dc3545;
+            text-align: center;
+        }
+        
+        .instruction::before {
+            content: "重要提示";
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background-color: #dc3545;
+            color: #fff;
+            padding: 2px 15px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .instruction p {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .instruction ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .instruction li {
+            margin-bottom: 8px;
+        }
+        
+        .demo {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .demo-btn {
+            background-color: #17a2b8;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .demo-btn:hover {
+            background-color: #138496;
+        }
+        
+        .final-step {
+            background-color: #d4edda;
+            border: none;
+            border-radius: 10px;
+            padding: 40px;
+            margin: 40px 0;
+            text-align: center;
+        }
+        
+        .final-step h2 {
+            color: #155724;
+            font-size: 28px;
+            margin-bottom: 25px;
+        }
+        
+        .final-step p {
+            color: #155724;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        
+        .final-step .warning {
+            background-color: #fff3cd;
+            border: none;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px auto;
+            color: #856404;
+            font-size: 16px;
+            max-width: 600px;
+        }
+        
+        .final-step .success-example {
+            background-color: #e7f3ff;
+            border: none;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px auto;
+            color: #004085;
+            font-size: 14px;
+            max-width: 600px;
+        }
+        
+        .final-step .success-example img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #dc3545;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #856404;
+            font-size: 14px;
+        }
+        
+        .success-example {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d7ff;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #004085;
+            font-size: 14px;
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 30px;
+            border: 1px solid #888;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .platform-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .platform-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .kuaishou-btn {
+            background-color: #fe2c55;
+            color: #fff;
+        }
+        
+        .douyin-btn {
+            background-color: #000;
+            color: #fff;
+        }
+        
+        .xiaohongshu-btn {
+            background-color: #fe2c55;
+            color: #fff;
+        }
+        
+        .platform-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+        
+        /* 机器人样式 */
+        .robot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+        }
+        
+        .robot-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #ffc107;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .robot-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .robot-chat {
+            display: none;
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            width: 350px;
+            height: 450px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            overflow: hidden;
+            z-index: 999;
+        }
+        
+        .robot-header {
+            background-color: #ffc107;
+            color: #fff;
+            padding: 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .robot-messages {
+            padding: 15px;
+            height: 280px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+        }
+        
+        .robot-message {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 10px 10px 10px 0;
+            align-self: flex-start;
+        }
+        
+        .user-message {
+            background-color: #ffc107;
+            color: #fff;
+            padding: 10px;
+            border-radius: 10px 10px 0 10px;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        
+        .robot-input {
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .robot-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+        
+        .robot-input button {
+            padding: 0 20px;
+            background-color: #ffc107;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .robot-buttons {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            border-top: 1px solid #dee2e6;
+            background-color: #f8f9fa;
+        }
+        
+        .robot-platform-btn {
+            flex: 1;
+            padding: 18px 12px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 16px;
+        }
+        
+        .orange-btn {
+            background-color: #ff7a00;
+            color: #fff;
+        }
+        
+        .black-btn {
+            background-color: #000;
+            color: #fff;
+        }
+        
+        .robot-platform-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .robot-header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+            user-select: none;
+        }
+        
+        .robot-messages {
+            padding: 12px;
+            height: 280px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .robot-message {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 10px 10px 10px 0;
+            align-self: flex-start;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .user-message {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            border-radius: 10px 10px 0 10px;
+            align-self: flex-end;
+            margin-left: auto;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .robot-input {
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #dee2e6;
+            background-color: #fff;
+        }
+        
+        .robot-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .robot-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #007bff;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .robot-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            background-color: #0069d9;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 20px 0;
+            border-top: 1px solid #dee2e6;
+            color: #6c757d;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .step {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .step h2 {
+                font-size: 20px;
+            }
+            
+            .keyword-list {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AACB - 资源获取平台</h1>
+            <p>按照以下步骤操作，即可获取你想要的资源</p>
+            
+            <!-- 轮播 -->
+            <div class="carousel">
+                <div class="carousel-container" id="carouselContainer">
+                    <div class="carousel-item">
+                        <img src="C:\Users\季涛\Documents\trae_projects\html\images\4.jpg" alt="轮播图1">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="C:\Users\季涛\Documents\trae_projects\html\images\2.jpg" alt="轮播图2">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="C:\Users\季涛\Documents\trae_projects\html\images\3.jpg" alt="轮播图3">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="C:\Users\季涛\Documents\trae_projects\html\images\1.jpg" alt="轮播图4">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="C:\Users\季涛\Documents\trae_projects\html\images\5.jpg" alt="轮播图5">
+                    </div>
+                </div>
+                <div class="carousel-nav">
+                    <button class="carousel-btn" onclick="prevSlide()">&lt;</button>
+                    <button class="carousel-btn" onclick="nextSlide()">&gt;</button>
+                </div>
+                <div class="carousel-indicators" id="carouselIndicators">
+                    <div class="carousel-indicator active" onclick="goToSlide(0)"></div>
+                    <div class="carousel-indicator" onclick="goToSlide(1)"></div>
+                    <div class="carousel-indicator" onclick="goToSlide(2)"></div>
+                    <div class="carousel-indicator" onclick="goToSlide(3)"></div>
+                    <div class="carousel-indicator" onclick="goToSlide(4)"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="step" data-step="1">
+            <h2>第一步：复制评论文案</h2>
+            <p class="copy-instruction">点击复制下面文案【点击复制】</p>
+            <div class="copy-cards">
+                <div class="copy-card" onclick="copyText('xhlm回家回家cc把回家回家换成.')">
+                    <p>xhlm回家回家cc把回家回家换成.</p>
+                </div>
+                <div class="copy-card" onclick="copyText('xhlm胡椒cc胡椒改成.就好')">
+                    <p>xhlm胡椒cc胡椒改成.就好</p>
+                </div>
+                <div class="copy-card" onclick="copyText('xhlm@同仁动漫了.cc@去掉同仁动漫🈶懂了')">
+                    <p>xhlm@同仁动漫了.cc@去掉同仁动漫🈶懂了</p>
+                </div>
+                <div class="copy-card" onclick="copyText('xhlm天天开心cc把天天开心换成.')">
+                    <p>xhlm天天开心cc把天天开心换成.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="step" data-step="2">
+            <h2>第二步：点击关键词并评论</h2>
+            <div class="keywords">
+                <p>复制上一步的文案后，点击下面文字选择想评论的平台</p>
+                <div class="keyword-list">
+                    <span class="keyword" onclick="openPlatform('动漫少女')">动漫少女</span>
+                    <span class="keyword" onclick="openPlatform('火影同人')">火影同人</span>
+                    <span class="keyword" onclick="openPlatform('日本动漫')">日本动漫</span>
+                    <span class="keyword" onclick="openPlatform('黄色系同人')">黄色系同人</span>
+                    <span class="keyword" onclick="openPlatform('游戏艾莉同人')">游戏艾莉同人</span>
+                    <span class="keyword" onclick="openPlatform('鬼灭之刃同人')">鬼灭之刃同人</span>
+                    <span class="keyword" onclick="openPlatform('热门同人')">热门同人</span>
+                    <span class="keyword" onclick="openPlatform('海贼王同人')">海贼王同人</span>
+                </div>
+            </div>
+            <div class="instruction">
+                <p>⚠️ 然后找3个相关作品评论刚复制的文案</p>
+            </div>
+        </div>
+        
+        <div class="step" data-step="3">
+            <h2>第三步：评论并截图</h2>
+            <div class="instruction">
+                <p>打开抖音/快手/小红书点击关键词，自动进入App</p>
+                <ol>
+                    <li>然后往下滑，选5个相关的作品</li>
+                    <li>在每个视频下评论刚才复制的文案</li>
+                    <li>最后给自己点个赞，并截图</li>
+                </ol>
+            </div>
+            <div class="demo">
+                <p>👇 操作示范 👇</p>
+                <button class="demo-btn">查看操作视频</button>
+            </div>
+        </div>
+        
+        <div class="final-step">
+            <h2>最后一步：领取资源</h2>
+            <p>文案已复制到剪贴板</p>
+            <p>将你刚评论的截图发给右下侧的 AI机器人</p>
+            <p>机器人会在10秒内审核，自动弹出所有资源的网盘链接</p>
+            <div class="warning">
+                ⚠️ 注意：不规范截图和重复截图将重置进度！
+            </div>
+            <div class="success-example">
+                ✅ 已完成示例：👇👇👇
+                <div style="margin-top: 15px; padding: 20px; background-color: #fff; border-radius: 5px;">
+                    <div style="border: 2px solid #dc3545; border-radius: 5px; padding: 10px; text-align: center;">
+                        <img src="C:\Users\季涛\Documents\trae_projects\html\images\屏幕截图 2026-02-17 143330.png" alt="已完成示例" style="max-width: 100%; height: auto; border-radius: 3px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2026 AACB. 保留所有权利.</p>
+        </div>
+    </div>
+    
+    <!-- 平台选择模态框 -->
+    <div id="platformModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>选择平台</h3>
+            <div class="platform-buttons">
+                <button class="platform-btn kuaishou-btn" onclick="openApp('kuaishou')">
+                    📱 快手
+                </button>
+                <button class="platform-btn douyin-btn" onclick="openApp('douyin')">
+                    🎵 抖音
+                </button>
+                <button class="platform-btn xiaohongshu-btn" onclick="openApp('xiaohongshu')">
+                    🍠 小红书
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 虚拟机器人 -->
+    <div class="robot-container">
+        <div class="robot-chat" id="robotChat">
+            <div class="robot-header">
+                <span>🤖 AI 机器人</span>
+                <div style="display: flex; gap: 10px;">
+                    <span style="font-size: 14px; color: #28a745;">审核员：小雨 在线</span>
+                    <span class="close" onclick="toggleRobot()">&times;</span>
+                </div>
+            </div>
+            <div class="robot-messages" id="robotMessages">
+                <div class="message robot-message">
+                    你好！请将评论的规范截图发送给我，审核通过后我会发送所有资源的跳转链接~
+                    <div style="background-color: #fff3cd; border-radius: 5px; padding: 10px; margin-top: 10px; font-size: 14px;">
+                        ⚠️ 注意：不规范截图和重复截图将重置进度！
+                    </div>
+                </div>
+            </div>
+            <div class="robot-input">
+                <input type="text" id="robotInput" placeholder="评论截图发送" style="flex: 1;">
+                <input type="file" id="robotFile" accept="image/*" multiple style="display: none;">
+                <button onclick="document.getElementById('robotFile').click()" style="background-color: #17a2b8; color: #fff; border: none; padding: 0 15px; border-radius: 5px; cursor: pointer;">📷</button>
+                <button onclick="sendMessage()" style="background-color: #ffc107; color: #fff; border: none; padding: 0 15px; border-radius: 5px; cursor: pointer;">发送</button>
+            </div>
+            <div class="robot-buttons">
+                <button class="robot-platform-btn orange-btn" onclick="openApp('kuaishou')">
+                    📱 打开快手
+                </button>
+                <button class="robot-platform-btn black-btn" onclick="openApp('douyin')">
+                    🎵 打开抖音
+                </button>
+            </div>
+        </div>
+        <button class="robot-button" onclick="toggleRobot()">
+            🤖
+        </button>
+    </div>
+    
+    <script>
+        // 复制文案功能
+        function copyText(text) {
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    alert('文案已成功复制到剪贴板！');
+                })
+                .catch(err => {
+                    alert('复制失败，请手动复制');
+                    console.error('复制失败:', err);
+                });
+        }
+        
+        // 获取模态框元素
+        const modal = document.getElementById('platformModal');
+        const closeModal = document.getElementsByClassName('close')[0];
+        let currentKeyword = '';
+        
+        // 打开平台功能
+        function openPlatform(keyword) {
+            currentKeyword = keyword;
+            modal.style.display = 'block';
+        }
+        
+        // 关闭模态框
+        closeModal.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // 打开应用
+        function openApp(app) {
+            modal.style.display = 'none';
+            let url = '';
+            
+            switch(app) {
+                case 'kuaishou':
+                    url = `kuaishou://search/${encodeURIComponent(currentKeyword)}`;
+                    break;
+                case 'douyin':
+                    url = `snssdk1128://search/${encodeURIComponent(currentKeyword)}`;
+                    break;
+                case 'xiaohongshu':
+                    url = `xiaohongshu://search_result?keyword=${encodeURIComponent(currentKeyword)}`;
+                    break;
+            }
+            
+            // 尝试打开应用，如果失败则打开网页版
+            window.location.href = url;
+            setTimeout(() => {
+                // 如果应用没打开，跳转到网页版
+                let webUrl = '';
+                switch(app) {
+                    case 'kuaishou':
+                        webUrl = `https://www.kuaishou.com/search/video?keyword=${encodeURIComponent(currentKeyword)}`;
+                        break;
+                    case 'douyin':
+                        webUrl = `https://www.douyin.com/search/${encodeURIComponent(currentKeyword)}`;
+                        break;
+                    case 'xiaohongshu':
+                        webUrl = `https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(currentKeyword)}`;
+                        break;
+                }
+                window.open(webUrl, '_blank');
+            }, 1000);
+        }
+        
+        // 机器人功能
+        let uploadedImages = [];
+        let uploadCount = 0;
+        let resetCount = 0;
+        
+        function toggleRobot() {
+            const robotChat = document.getElementById('robotChat');
+            robotChat.style.display = robotChat.style.display === 'block' ? 'none' : 'block';
+        }
+        
+        // 监听文件上传
+        document.getElementById('robotFile').addEventListener('change', function(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                handleImageUpload(files);
+            }
+        });
+        
+        function handleImageUpload(files) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.type.startsWith('image/')) {
+                    // 检查是否为重复图片（简单的文件名检查）
+                    const isDuplicate = uploadedImages.some(img => img.name === file.name);
+                    
+                    if (isDuplicate) {
+                        addMessage('robot', '⚠️ 检测到重复图片，已重置上传进度！请重新上传不同的评论截图。');
+                        uploadedImages = [];
+                        uploadCount = 0;
+                        resetCount++;
+                        return;
+                    }
+                    
+                    // 读取图片并显示
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        addMessage('user', '<img src="' + e.target.result + '" style="max-width: 200px; max-height: 200px; border-radius: 5px;">');
+                        uploadedImages.push({ name: file.name, data: e.target.result });
+                        uploadCount++;
+                        
+                        // 检查是否达到最少三张图片要求
+                        if (uploadCount >= 3) {
+                            setTimeout(() => {
+                                addMessage('robot', '✅ 已收到 ' + uploadCount + ' 张截图，正在审核中...');
+                                setTimeout(() => {
+                                    addMessage('robot', '<div style="padding: 10px; background-color: #d4edda; border-radius: 5px; margin-bottom: 10px;"><strong>✅ 宝宝恭喜你获得资源</strong><br>一共有4个网盘获取入口，如果其中一个和谐或者没有想看的就换一个渠道！速度保存到自己网盘，因为链接随时会失效，4个渠道建议全部保存到自己的网盘，因为每个网盘的资源都不一样，并且每日都会更新</div><div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;"><div class="resource-btn" onclick="openImage(\'C:\Users\季涛\Documents\trae_projects\html\images\is.jpg\')" style="padding: 12px; background-color: #f8f9fa; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; cursor: pointer;"><span><strong>🔞 新1</strong><br>（B站过来的小伙伴👉强推❗在线追漫追番地址（第一个站点就是jm天堂，但是一定要用流量哦！）</span><span style="color: #007bff; font-weight: bold;">→</span></div><div class="resource-btn" onclick="window.open(\'https://pan.quark.cn/s/2005f2ce3eaf\', \'_blank\')" style="padding: 12px; background-color: #f8f9fa; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; cursor: pointer;"><span><strong>🔞 新2</strong><br>同人动漫/漫/本子/漫画/每日更</span><span style="color: #007bff; font-weight: bold;">→</span></div><div class="resource-btn" onclick="window.open(\'https://pan.baidu.com/s/14CaaNqoxrg20TyDQRiN-Fw?pwd=1234\', \'_blank\')" style="padding: 12px; background-color: #f8f9fa; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; cursor: pointer;"><span><strong>🔞 新3</strong><br>同人动漫/漫/本子/漫画/每日更</span><span style="color: #007bff; font-weight: bold;">→</span></div><div class="resource-btn" onclick="showUnavailableMessage()" style="padding: 12px; background-color: #f8f9fa; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; cursor: pointer;"><span><strong>🔞 新4</strong><br>同人动漫/漫/本子/漫画/每日更</span><span style="color: #007bff; font-weight: bold;">→</span></div></div><style>.resource-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }</style>');
+                                }, 2000);
+                            }, 1000);
+                        } else {
+                            setTimeout(() => {
+                                addMessage('robot', '已收到 ' + uploadCount + ' 张截图，请继续上传，至少需要 3 张不同的评论截图。');
+                            }, 1000);
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('robotInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                // 添加用户消息
+                addMessage('user', message);
+                input.value = '';
+                
+                // 模拟机器人回复
+                setTimeout(() => {
+                    let reply = getRobotReply(message);
+                    addMessage('robot', reply);
+                }, 1000);
+            }
+        }
+        
+        function addMessage(type, content) {
+            const messagesContainer = document.getElementById('robotMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}-message`;
+            messageDiv.innerHTML = content;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function getRobotReply(message) {
+            // 简单的关键词匹配回复
+            message = message.toLowerCase();
+            
+            if (message.includes('你好') || message.includes('hi') || message.includes('hello')) {
+                return '你好！请将评论的规范截图发送给我，审核通过后我会发送所有资源的跳转链接~';
+            } else if (message.includes('资源') || message.includes('链接')) {
+                return '请上传至少 3 张不同的评论截图，审核通过后我会给你发送资源链接。';
+            } else if (message.includes('怎么') || message.includes('如何')) {
+                return '请按照网站上的三步操作：1. 复制文案 2. 选择平台评论 3. 截图给我获取资源。';
+            } else if (message.includes('谢谢') || message.includes('感谢')) {
+                return '不客气！有任何问题随时告诉我。';
+            } else {
+                return '请上传评论截图，至少需要 3 张不同的截图才能获取资源链接。';
+            }
+        }
+        
+        // 按Enter键发送消息
+        document.getElementById('robotInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // 轮播功能
+        let currentSlide = 0;
+        const slideCount = 5;
+        let slideInterval;
+        
+        function showSlide(index) {
+            const container = document.getElementById('carouselContainer');
+            const indicators = document.querySelectorAll('.carousel-indicator');
+            
+            // 确保索引在有效范围内
+            currentSlide = (index + slideCount) % slideCount;
+            
+            // 更新轮播位置
+            container.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            // 更新指示器状态
+            indicators.forEach((indicator, i) => {
+                if (i === currentSlide) {
+                    indicator.classList.add('active');
+                } else {
+                    indicator.classList.remove('active');
+                }
+            });
+        }
+        
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+            resetSlideInterval();
+        }
+        
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+            resetSlideInterval();
+        }
+        
+        function goToSlide(index) {
+            showSlide(index);
+            resetSlideInterval();
+        }
+        
+        function startSlideInterval() {
+            slideInterval = setInterval(nextSlide, 5000);
+        }
+        
+        function resetSlideInterval() {
+            clearInterval(slideInterval);
+            startSlideInterval();
+        }
+        
+        // 打开图片
+        function openImage(imagePath) {
+            window.open(imagePath, '_blank');
+        }
+        
+        // 显示链接不可用消息
+        function showUnavailableMessage() {
+            addMessage('robot', '⚠️ 该链接暂时不可用');
+        }
+        
+        // 模拟复制到剪贴板的提示
+        document.addEventListener('DOMContentLoaded', function() {
+            // 页面加载完成后的初始化操作
+            console.log('页面加载完成');
+            
+            // 启动轮播
+            startSlideInterval();
+            
+            // 实现机器人界面拖拽功能
+            const robotChat = document.getElementById('robotChat');
+            const robotHeader = document.querySelector('.robot-header');
+            let isDragging = false;
+            let offsetX, offsetY;
+            
+            robotHeader.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                offsetX = e.clientX - robotChat.getBoundingClientRect().left;
+                offsetY = e.clientY - robotChat.getBoundingClientRect().top;
+                robotHeader.style.cursor = 'grabbing';
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (isDragging) {
+                    const x = e.clientX - offsetX;
+                    const y = e.clientY - offsetY;
+                    
+                    // 确保机器人界面不会超出屏幕
+                    const maxX = window.innerWidth - robotChat.offsetWidth;
+                    const maxY = window.innerHeight - robotChat.offsetHeight;
+                    
+                    const boundedX = Math.max(0, Math.min(x, maxX));
+                    const boundedY = Math.max(0, Math.min(y, maxY));
+                    
+                    robotChat.style.left = boundedX + 'px';
+                    robotChat.style.top = boundedY + 'px';
+                    robotChat.style.bottom = 'auto';
+                    robotChat.style.right = 'auto';
+                }
+            });
+            
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+                robotHeader.style.cursor = 'move';
+            });
+        });
+    </script>
+</body>
+</html>
